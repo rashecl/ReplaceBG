@@ -39,6 +39,7 @@ head(HbA1cDataset)
 BGMdataset<- read.csv('DataTables/HDeviceBGM.txt', sep = '|',header = TRUE, stringsAsFactors = F)
 BGMdataset$DeviceTm = chron(times =BGMdataset$DeviceTm)
 BGMdataset = BGMdataset[order(BGMdataset$PtID, BGMdataset$DeviceDtTmDaysFromEnroll, BGMdataset$DeviceTm), c(3,5,6,9)]
+BGMdataset = BGMdataset[BGMdataset$DeviceDtTmDaysFromEnroll >= 0, ]
 
 BGMdataset = BGMdataset %>%
   group_by(PtID) %>%
@@ -55,6 +56,7 @@ head(BGMdataset)
 CGMdataset<- read.csv('DataTables/HDeviceCGM.txt', sep = '|',header = TRUE, stringsAsFactors = F) 
 CGMdataset$DeviceTm = chron(times =CGMdataset$DeviceTm)
 CGMdataset = CGMdataset[order(CGMdataset$PtID, CGMdataset$DeviceDtTmDaysFromEnroll, CGMdataset$DeviceTm), c(3,5,6,10)]
+CGMdataset = CGMdataset[CGMdataset$DeviceDtTmDaysFromEnroll >= 0, ]
 
 CGMdataset = CGMdataset %>%
   group_by(PtID) %>%
@@ -84,11 +86,12 @@ ReplaceBGDataset = RosterDataset %>%
   
 ## To show the 5th patient's CGMdata:
 # ReplaceBGDataset$CGMdata[[5]]
+# hist(ReplaceBGDataset$CGMdata[[5]]$GlucoseValue)
 
 ## To show the 5th patient's Week 26 HbA1c results:
 # ReplaceBGDataset$HbA1cData[[5]]$HbA1cTestRes[4]
 
-# save(file = 'ReplaceBGDataset.Rdata', list = "ReplaceBGDataset")
+save(file = 'DataTables/ReplaceBGDataset.Rdata', list = "ReplaceBGDataset")
 
 
 
