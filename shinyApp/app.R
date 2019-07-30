@@ -20,14 +20,14 @@ load("~/ReplaceBG/DataTables/ReplaceBGDataset.Rdata") # 1ish seconds NICE!
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Shiny test"),
+  titlePanel("Individual Data Explorer"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
     # Sidebar panel for inputs ----
     sidebarPanel(
       
-      helpText("test"),
+      helpText("Explore individual subject data in the replace BG dataset"),
       
       # Input: select subject ----
       selectInput(inputId = "ID",
@@ -139,14 +139,26 @@ server <- function(input, output){
       tmp2 = dataset_CGM() # get data 
       tmp2$Measurement = "CGM"
       tmp3 = full_join(tmp1,tmp2,by = c("DeviceDtTmDaysFromEnroll", "DeviceTm", "Measurement", "GlucoseValue"))
+      
+      ## add filter !!! 
       # plot
       ggplot(data = tmp3, aes(x = GlucoseValue, fill = Measurement)) + 
         geom_density( alpha = 0.5)
     })
     
+    p4 <- reactive({
+      tmp1 = dataset_BGM() # get data 
+      tmp2 = dataset_CGM() # get data 
+      # indices where CGM and BGM were sampled at the same device time and device date time
+      tmp3 <- inner_join(tmp1, tmp2, by = c("DeviceTm", "DeviceDtTmDaysFromEnroll"), suffix = c(".BGM", ".CGM"))
+      
+      ggplot(data = tmp3, aes(x = GlucoseValue.BGM, y = GlucoseValue.CGM)) + 
+        geom_point()
+    })
+    
     # arrange
-    ptlist <- list(p1(), p2(), p3())
-    grid.arrange(grobs = ptlist,nrow=3,ncol=1)
+    ptlist <- list(p1(), p2(), p3(), p4())
+    grid.arrange(grobs = ptlist,nrow=4,ncol=1)
     
 
   })
