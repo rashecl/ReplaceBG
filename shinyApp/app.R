@@ -141,7 +141,7 @@ server <- function(input, output){
       tmp3 = full_join(tmp1,tmp2,by = c("DeviceDtTmDaysFromEnroll", "DeviceTm", "Measurement", "GlucoseValue"))
       # plot
       ggplot(data = tmp3, aes(x = GlucoseValue, fill = Measurement)) + 
-        geom_histogram( bins = 30, alpha = 0.5)
+        geom_density( alpha = 0.5)
     })
     
     # arrange
